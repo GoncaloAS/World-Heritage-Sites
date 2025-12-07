@@ -2,9 +2,9 @@ import pandas as pd
 import sqlite3
 from new_dataset import create_dataset
 
-xlsx_path = r'C:\Users\afons\Desktop\Trabalhos\BD\whcdata\whc-sites-2024.xlsx'
-csv_path= r'C:\Users\afons\Desktop\Trabalhos\BD\whcdata\whc-sites-2024-new.csv'
-db_path = r'C:\Users\afons\Desktop\Trabalhos\BD\whcdata\whc-sites-2024.db'
+xlsx_path = 'data\whc-sites-2024.xlsx'
+csv_path= 'data\whc-sites-2024-new.csv'
+db_path = 'whc-sites-2024.db'
 
 
 
@@ -289,3 +289,4 @@ def execute_query_and_print(query):
 
     conn.close()
 import_csv_to_db()
+
