@@ -11,6 +11,6 @@ This app was built to navigate the World Heritage Sites database.
 7. Run the app using `python server.py`
 
 # Contributors
-- Afonso Amaro ()
+- Afonso Amaro (https://github.com/Sonso376)
 - Gonçalo Sousa (https://github.com/GoncaloAS)
 - Matilde Alves (https://github.com/matilde938)
