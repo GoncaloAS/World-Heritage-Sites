@@ -2,8 +2,8 @@ import pandas as pd
 import sqlite3
 from new_dataset import create_dataset
 
-xlsx_path = 'data\whc-sites-2024.xlsx'
-csv_path= 'data\whc-sites-2024-new.csv'
+xlsx_path = 'data/whc-sites-2024.xlsx'
+csv_path= 'data/whc-sites-2024-new.csv'
 db_path = 'world-heritage-sites.db'
 
 
@@ -276,7 +276,6 @@ def execute_query_and_print(query):
     column_names = [description[0] for description in cursor.description] #extrai os nomes das colunas e retorna informações sobre as colunas do resultado da query
     print(column_names)
 
-
     results = cursor.fetchall()
 
 
@@ -288,6 +287,6 @@ def execute_query_and_print(query):
         print(row)
 
     conn.close()
-import_csv_to_db()
+
 
 
