@@ -13,4 +13,4 @@ This app was built to navigate the World Heritage Sites database.
 # Contributors
 - Afonso Amaro ()
 - Gonçalo Sousa (https://github.com/GoncaloAS)
-- Matilde Alves ()
+- Matilde Alves (https://github.com/matilde938)
