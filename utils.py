@@ -4,7 +4,7 @@ from new_dataset import create_dataset
 
 xlsx_path = 'data\whc-sites-2024.xlsx'
 csv_path= 'data\whc-sites-2024-new.csv'
-db_path = 'whc-sites-2024.db'
+db_path = 'world-heritage-sites.db'
 
 
 
@@ -289,4 +289,5 @@ def execute_query_and_print(query):
 
     conn.close()
 import_csv_to_db()
+
 
