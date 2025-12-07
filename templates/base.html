@@ -9,7 +9,6 @@
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
           crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="script" href="{{ url_for('static', filename='project.js') }}">
 </head>
 <body>
 
@@ -51,6 +50,6 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 <script src="https://unpkg.com/htmx.org@1.9.10" xintegrity="sha384-D1zB7x4x+8bK8f8p11/wz2yLg/dK7Q5z5O1Zf5q2vS5+z5x5x5+w==" crossorigin="anonymous"></script>
-
+<script src="{{ url_for('static', filename='project.js') }}"></script>
 </body>
 </html>
