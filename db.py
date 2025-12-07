@@ -1,11 +1,13 @@
 import logging
 import sqlite3
+from utils import import_csv_to_db
 
 global DB
 DB = dict()
 
 def connect():
     global DB
+    import_csv_to_db()
     c = sqlite3.connect('world_heritage_sites.db', check_same_thread=False)
     c.row_factory = sqlite3.Row
     DB['conn'] = c
@@ -25,4 +27,5 @@ def execute(sql, args=None):
 
 def close():
     global DB
+
     DB['conn'].close()
