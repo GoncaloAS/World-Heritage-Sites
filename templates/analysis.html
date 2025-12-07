@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container py-5 text-white analysis-container">
+        <header class="mb-5 border-bottom border-secondary pb-3">
+            <h1 class="display-5 text-white text-center">Complex Questions Analysis</h1>
+        </header>
+        <div class="filter-bar mb-5 p-4 rounded-lg bg-card shadow-lg"
+             style="border: 1px solid #3a475a;">
+            <form id="analysis-form">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-8">
+                        <label for="querySelect"
+                               class="form-label text-secondary small">Select the
+                            desired query</label>
+                        <select name="query_type" id="querySelect"
+                                class="form-select bg-dark text-white border-secondary"
+                                hx-get="/analysis/run"
+                                hx-trigger="change"
+                                hx-target="#analysis-results"
+                                hx-swap="innerHTML">
+                            <option value="">-- Select a Question --</option>
+                            <option value="area_by_category">What is the total count of
+                                site area (ha) by category?
+                            </option>
+                            <option value="sites_by_country">What is the total amount of
+                                sites by country?
+                            </option>
+                            <option value="dangerous_sites_by_region">What is the total
+                                amount of endangered sites by region?
+                            </option>
+                            <option value="sites_by_inscription_year">What is the total
+                                amount of sites inscribed per year?
+                            </option>
+                            <option value="top_5_country_with_most_dangerous_sites">Top
+                                5 countries with the highest number of endangered sites?
+                            </option>
+                            <option value="average_criteria_per_site_per_category">What
+                                is the average number of criteria a site has per
+                                category
+                            </option>
+                            <option value="sites_with_park_in_name">What are the sites
+                                that contain "Park" in the name?
+                            </option>
+                            <option value="number_sites_located_multiple_countries_per_hemisphere">
+                                What is the total amount of sites per hemisphere that
+                                are located in multiple countries?
+                            </option>
+                            <option value="avg_latitude_and_longitude_by_region">What is the average latitude and longitude of sites by region?</option>
+                            <option value="top_criteria_for_unique_justification">What is the top 5 criteria most used in sites with "Unique" in the justification?</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div id="analysis-results" class="d-flex justify-content-center">
+        </div>
+    </div>
+{% endblock %}

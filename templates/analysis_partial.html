@@ -1,0 +1,43 @@
+{% if results and headers and column_keys %}
+    <div class="card p-4 rounded-lg bg-card shadow-lg"
+         style="border: 1px solid #3a475a; width: max-content;">
+        <div class="table-responsive">
+            <table class="table table-dark table-striped table-hover table-borderless align-middle">
+                <thead>
+                <tr class="color-yellow text-uppercase fw-bold border-bottom border-primary-light">
+                    <th scope="col" class="text-start" style="width: 5%;">#</th>
+                    {% for header_name in headers %}
+                        <th scope="col"
+                            class="text-start">
+                            {{ header_name }}
+                        </th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for row in results %}
+                    <tr class="table-row-hover">
+                        <th scope="row"
+                            class="text-secondary text-start">{{ loop.index }}.
+                        </th>
+                        {% for key in column_keys %}
+                            {% set value = row[key] %}
+                            <td class="text-start">
+                                {% if value is number %}
+                                    {% if value | round(0) == value %}
+                                        {{ "{:,.0f}".format(value) | replace(',', ' ') | replace('.', ',') | safe }}
+                                    {% else %}
+                                        {{ "{:,.3f}".format(value) | replace(',', ' ') | replace('.', ',') | safe }}
+                                    {% endif %}
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}

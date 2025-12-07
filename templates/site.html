@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container py-5 text-white">
+        <header class="mb-5 border-bottom border-secondary pb-3 px-0 d-flex justify-content-between align-items-end">
+            <h1 class="display-5 text-white mb-0">{{ site.name_en | safe }}</h1>
+            <a href="/sites" class="btn btn-outline-secondary mt-5"><i
+                    class="fas fa-arrow-left me-2"></i> Voltar à Lista</a>
+        </header>
+        <div class="card p-5 rounded-lg bg-card shadow-lg"
+             style="border: 1px solid #3a475a;">
+            <div class="mb-5 pb-3 border-bottom border-dark-accent">
+                <h4 class="color-yellow mb-3 fw-semibold">Description</h4>
+                <div class="text-white fs-5">
+                    {% if site.short_description_en %}
+                        {{ site.short_description_en | safe }}
+                    {% else %}
+                        <em class="text-secondary">There is no available description for
+                            this site.</em>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row g-5">
+                <div class="col-12 col-lg-6">
+                    <h4 class="color-yellow mb-4 fw-semibold">Location and Data</h4>
+                    <dl class="row mb-0 detail-list">
+                        <dt class="col-sm-4 fw-normal text-secondary">Region</dt>
+                        <dd class="col-sm-8 text-white">{{ site.region_en }}</dd>
+                        <dt class="col-sm-4 fw-normal text-secondary">Countries</dt>
+                        <dd class="col-sm-8 text-white">
+                            {% for country in site.countries.split(',') %}
+                                <a href="/sites?country={{ country.strip() }}"
+                                   class="color-white">{{ country.strip() }}</a>
+                                {% if not loop.last %}, {% endif %}
+                            {% endfor %}                        </dd>
+
+                        <dt class="col-sm-4 fw-normal text-secondary">Latitude</dt>
+                        <dd class="col-sm-8 text-white">{{ site.latitude }}</dd>
+
+                        <dt class="col-sm-4 fw-normal text-secondary">Longitude</dt>
+                        <dd class="col-sm-8 text-white">{{ site.longitude }}</dd>
+
+                        <dt class="col-sm-4 fw-normal text-secondary">Area (ha)</dt>
+                        <dd class="col-sm-8 text-white">{{ site.area_hectares }}</dd>
+                    </dl>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h4 class="color-yellow mb-4 fw-semibold">Classification &
+                        Status</h4>
+                    <dl class="row mb-0 detail-list">
+                        <dt class="col-sm-5 fw-normal text-secondary">Year of
+                            Registration
+                        </dt>
+                        <dd class="col-sm-7">
+                            <a href="/sites?year={{ site.date_inscribed }}"
+                               class="color-white text-decoration-underline-hover">{{ site.date_inscribed }}</a>
+                        </dd>
+
+                        <dt class="col-sm-5 fw-normal text-secondary">Category</dt>
+                        <dd class="col-sm-7">
+                            <a href="/sites?category={{ site.category_short }}"
+                               class="color-white text-decoration-underline-hover">{{ site.category }}</a>
+                        </dd>
+
+                        <dt class="col-sm-5 fw-normal text-secondary">Criteria</dt>
+                        <dd class="col-sm-7">
+                            <button type="button"
+                                    class="btn btn-link p-0 text-decoration-underline-hover color-white color-hover-white"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#criteriaModal"
+                                    hx-get="/sites/{{ site.id_no }}/criteria/"
+                                    hx-target="#criteriaModalContent"
+                                    hx-swap="innerHTML">
+                                View Details
+                            </button>
+                        </dd>
+
+                        <dt class="col-sm-5 fw-normal text-secondary">In Danger?
+                        </dt>
+                        <dd class="col-sm-7">
+                            {% if site.danger == 1 %}
+                                <a href="/sites?danger=1"
+                                   class="color-white text-decoration-underline-hover">Yes
+                                    (In Danger)</a>
+                            {% else %}
+                                <a href="/sites?danger=0"
+                                   class="color-white text-decoration-underline-hover">No</a>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="criteriaModal" tabindex="-1"
+         aria-labelledby="criteriaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" id="criteriaModalContent">
+                <div class="modal-body bg-dark text-white text-center p-5">
+                    <p>Loading Criteria</p>
+                    <div class="spinner-border color-yellow" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .bg-card {
+            /* Cor que parece estar a usar nos cards de filtro (azul escuro) */
+            background-color: #1f273b !important;
+        }
+
+        .bg-dark-accent {
+            /* Cor para badges ou divisores */
+            background-color: #3a475a !important;
+        }
+
+        .text-primary {
+            /* Cor amarela/dourada que parece ser o seu destaque */
+            color: #ffc400 !important;
+        }
+
+        .detail-list dd {
+            /* Padding extra para alinhar bem os detalhes */
+            padding-bottom: 0.5rem;
+        }
+
+        .text-decoration-underline-hover:hover {
+            text-decoration: underline !important;
+        }
+
+        /* Estilos adicionais para o modal */
+        #criteriaModal .modal-content {
+            background-color: #1a1e27; /* Fundo escuro para o modal */
+        }
+
+        #criteriaModal .btn-close {
+            filter: invert(1); /* Torna o X branco para melhor contraste */
+        }
+
+
+    </style>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container py-5">
+        <header class="text-center mb-5">
+            <h1 class="text-white display-4 mb-2">UNESCO World Heritage Sites</h1>
+            <p class="h1 font-weight-bold color-yellow">{{ stats.id_no }}
+                Sites</p>
+            <hr class="divider">
+        </header>
+        <h2 class="text-white mb-4 text-center">Current Database Stats</h2>
+        <div class="row text-center mb-5">
+            <div class="col-md-4 mb-3">
+                <div class="p-4 rounded shadow bg-card">
+                    <p class="h3 mb-1 color-yellow">{{ stats.site_number1 }}</p>
+                    <p class="text-secondary mb-0">Transboundary Sites</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-4 rounded shadow bg-card">
+                    <p class="h3 mb-1 color-yellow">{{ stats.site_number2 }}</p>
+                    <p class="text-secondary mb-0">Sites In Danger</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-4 rounded shadow bg-card">
+                    <p class="h3 mb-1 color-yellow">{{ stats.site_number3 }}</p>
+                    <p class="text-secondary mb-0">Cultural Sites</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-4 rounded shadow bg-card">
+                    <p class="h3 mb-1 color-yellow">{{ stats.site_number4 }}</p>
+                    <p class="text-secondary mb-0">Mixed Sites</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-4 rounded shadow bg-card">
+                    <p class="h3 mb-1 color-yellow">{{ stats.site_number5 }}</p>
+                    <p class="text-secondary mb-0">Natural Sites</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="p-4 rounded shadow bg-card">
+                    <p class="h3 mb-1 color-yellow">{{ "{:,.2f}".format(stats.total_area | float) }}
+                        km²</p>
+                    <p class="text-secondary mb-0">Total Area</p>
+                </div>
+            </div>
+            <hr class="divider">
+        </div>
+    </div>
+{% endblock %}

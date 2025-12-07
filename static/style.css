@@ -1,0 +1,133 @@
+/* Main Variables */
+body {
+    background-color: #030712;
+}
+
+.background-main {
+    background-color: #030712;
+}
+
+.color-white {
+    color: #f9fafb;
+}
+
+.color-yellow {
+    color: #ffc400;
+}
+
+.divider {
+    border-top: 2px solid #1f273b;
+}
+
+.mb-90 {
+    margin-bottom: 90px;
+}
+
+.color-hover-white:hover {
+    color: white;
+}
+
+.border-top-width {
+    border-top-width: thin !important;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #030712;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .navbar-nav {
+        margin-top: 0;
+    }
+
+    .navbar-brand {
+        color: #f9fafb;
+        font-size: 1.25rem;
+        margin-left: 0;
+    }
+
+    li {
+        margin: 0 10px;
+
+        a {
+            color: #c5c9cf;
+            font-size: 1rem;
+        }
+
+        &:hover a {
+            color: white;
+        }
+    }
+}
+
+/* Authors */
+.profile-card {
+    img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border: 3px solid #ffc400;
+    }
+}
+
+
+/* Site List */
+.site-list-container {
+    .bg-card {
+        background-color: #1f273b !important;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .site-card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        height: 3.6em;
+    }
+
+    .bg-dark-accent {
+        background-color: #3a475a !important;
+    }
+
+    input::placeholder {
+        color: white;
+    }
+}
+
+.table-dark {
+    --bs-table-bg: #1a1e27;
+    --bs-table-striped-bg: #212536;
+    --bs-table-hover-bg: #3a475a;
+    --bs-table-color: white;
+}
+
+.table-row-hover:hover {
+    cursor: pointer;
+    background-color: var(--bs-table-hover-bg) !important;
+}
+
+.analysis-container {
+    .bg-card {
+        background-color: #1f273b !important;
+    }
+
+    .bg-dark {
+        background-color: #1a1e27 !important;
+    }
+}

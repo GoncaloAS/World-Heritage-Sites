@@ -1,0 +1,30 @@
+<div class="mb-4">
+    <p class="text-white fw-bold">{{ summary }}</p>
+</div>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for site in sites %}
+        <div class="col">
+            <a href="/sites/{{ site.id_no }}"
+               class="text-decoration-none d-block h-100">
+                <div class="card h-100 p-4 rounded-lg shadow-lg bg-card border-0 site-card-hover d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge rounded-pill bg-dark-accent text-secondary text-uppercase fw-bold p-2">
+                            ID: {{ site.id_no }}
+                        </span>
+                    </div>
+                    <h5 class="card-title text-white mb-2 line-clamp-2">
+                        {{ site.name_en|safe }}
+                    </h5>
+                    <div class="card-text text-secondary small line-clamp-3">
+                        {{ site.short_description_en|safe }}
+                    </div>
+                    <div class="mt-auto pt-3">
+                        <small class="color-yellow fw-bold text-uppercase">
+                            View Details &rarr;
+                        </small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+</div>

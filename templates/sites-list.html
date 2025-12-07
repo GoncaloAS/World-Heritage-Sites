@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container py-5 site-list-container">
+        <header class="text-center mb-5 border-bottom border-secondary pb-3">
+            <h1 class="text-white display-5 mb-2">
+                World Heritage Sites List
+            </h1>
+        </header>
+        <div class="filter-bar mb-5 p-4 rounded-lg bg-card shadow-lg"
+             style="border: 1px solid #3a475a;">
+            <form hx-get="/sites/filter" hx-target="#site-list" hx-swap="innerHTML"
+                  hx-trigger="submit, change delay:500ms"
+                  class="row g-3 align-items-end"
+                  id="filter-form"
+                  onreset="setTimeout(() => htmx.trigger(this, 'change'), 1);">
+                <div class="col-md-3">
+                    <label for="countryInput" class="form-label text-secondary small">Country
+                        Name (Partial Match)</label>
+                    <input type="text" name="country" id="countryInput"
+                           class="form-control bg-dark text-white border-secondary placeholder-white"
+                           placeholder="e.g., Portugal"
+                           value="{{ initial_country }}">
+                </div>
+                <div class="col-md-2">
+                    <label for="yearInput" class="form-label text-secondary small">Inscribed
+                        Year</label>
+                    <input type="number" name="year" id="yearInput"
+                           class="form-control bg-dark text-white border-secondary"
+                           placeholder="e.g., 1983"
+                           value="{{ initial_year }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="categorySelect" class="form-label text-secondary small">Category</label>
+                    <select name="category" id="categorySelect"
+                            class="form-select bg-dark text-white border-secondary">
+                        <option value="" {% if initial_category == "" %}selected{% endif %}>Any Category</option>
+                        <option value="C" {% if initial_category == "C" %}selected{% endif %}>Cultural</option>
+                        <option value="N" {% if initial_category == "N" %}selected{% endif %}>Natural</option>
+                        <option value="C/N" {% if initial_category == "C/N" %}selected{% endif %}>Mixed</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="dangerSelect" class="form-label text-secondary small">Danger
+                        Status</label>
+                    <select name="danger" id="dangerSelect"
+                            class="form-select bg-dark text-white border-secondary">
+                        <option value="" {% if initial_danger != "1" and initial_danger != "0" %}selected{% endif %}>Any Status</option>
+                        <option value="1" {% if initial_danger == "1" %}selected{% endif %}>In Danger</option>
+                        <option value="0" {% if initial_danger == "0" %}selected{% endif %}>Not In Danger</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" onclick="resetFilters()" class="btn btn-outline-warning w-100 fw-bold">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div id="site-list">
+            {% set sites = initial_sites %}
+            {% set summary = initial_summary %}
+            {% include 'sites_list_partial.html' %}
+        </div>
+    </div>
+{% endblock %}

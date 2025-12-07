@@ -1,0 +1,42 @@
+{% block content %}
+    <main class="container py-5">
+        <div class="card shadow-lg bg-dark text-white border-secondary">
+            <div class="card-body p-4 p-md-5">
+                <header class="pb-3 mb-4 border-bottom border-secondary">
+                    <h3 class="h4 text-white">Criteria</h3>
+                </header>
+                <section class="mb-4">
+                    <div class="list-group">
+                        {% for crit in criteria %}
+                            <div class="list-group-item bg-secondary bg-opacity-25 border-secondary mb-2 rounded border-top-width">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <a class="h5 mb-1 text-warning fw-bold">
+                                        <span class="badge bg-warning text-dark me-2">{{ crit.criterion_code }}</span>
+                                    </a>
+                                </div>
+                                <p class="mb-1 text-light small">{{ crit.cd_description }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                <section class="mt-4 pt-4 border-top border-secondary">
+                    <h3 class="h4 mb-3 text-white">Justification:</h3>
+                    <div class="list-group">
+                        <div class="list-group-item bg-secondary bg-opacity-25 border-secondary rounded">
+                            {% if criteria[0].justification_en %}
+                                <p class="mb-0 fst-italic text-white">
+                                    {{ criteria[0].justification_en | safe }}
+                                </p>
+                            {% else %}
+                                <p class="mb-0 fst-italic text-white">
+                                    No detailed justification is currently available for
+                                    this listing.
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+{% endblock %}
