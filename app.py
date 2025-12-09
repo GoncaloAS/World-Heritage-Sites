@@ -89,18 +89,17 @@ def get_site(id):
 def get_criteria(id):
     criteria = db.execute(
         '''
-        SELECT id_no, name_en, sc.criterion_code, cd.cd_description, wh.justification_en
-        FROM World_Heritage_Site wh
-                 JOIN Category c ON wh.id_no = c.site_number
-                 JOIN site_criteria sc ON c.site_number = sc.site_number
-                 JOIN criterion_descriptions cd ON sc.criterion_code = cd.criterion_code
-        WHERE id_no = ?
-        GROUP BY wh.id_no, sc.criterion_code
+        SELECT s.id_no, s.nome, j.criterio, cr.descricao, j.justificacao
+        FROM Sitios s
+                 JOIN Justificacoes j ON s.id_no = j.sitio
+                 JOIN Criterios cr ON j.criterio = cr.id_criterio
+        WHERE s.id_no = ?
+        GROUP BY s.id_no, j.criterio
         ORDER BY CASE
-                     WHEN sc.criterion_code = 'N10' THEN 999
+                     WHEN j.criterio = 'N10' THEN 999
                      ELSE 1
                      END,
-                 sc.criterion_code;
+                 j.criterio;
         ''', (id,)).fetchall()
     return render_template('site-criteria.html', criteria=criteria)
 

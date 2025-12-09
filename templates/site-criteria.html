@@ -11,10 +11,10 @@
                             <div class="list-group-item bg-secondary bg-opacity-25 border-secondary mb-2 rounded border-top-width">
                                 <div class="d-flex w-100 justify-content-between">
                                     <a class="h5 mb-1 text-warning fw-bold">
-                                        <span class="badge bg-warning text-dark me-2">{{ crit.criterion_code }}</span>
+                                        <span class="badge bg-warning text-dark me-2">{{ crit.criterio }}</span>
                                     </a>
                                 </div>
-                                <p class="mb-1 text-light small">{{ crit.cd_description }}</p>
+                                <p class="mb-1 text-light small">{{ crit.descricao }}</p>
                             </div>
                         {% endfor %}
                     </div>
@@ -23,9 +23,9 @@
                     <h3 class="h4 mb-3 text-white">Justification:</h3>
                     <div class="list-group">
                         <div class="list-group-item bg-secondary bg-opacity-25 border-secondary rounded">
-                            {% if criteria[0].justification_en %}
+                            {% if criteria[0].justificacao %}
                                 <p class="mb-0 fst-italic text-white">
-                                    {{ criteria[0].justification_en | safe }}
+                                    {{ criteria[0].justificacao | safe }}
                                 </p>
                             {% else %}
                                 <p class="mb-0 fst-italic text-white">

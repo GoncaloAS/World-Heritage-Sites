@@ -144,12 +144,12 @@ body {
     .text-decoration-underline-hover:hover {
         text-decoration: underline !important;
     }
+}
 
-    #criteriaModal .modal-content {
+#criteriaModal .modal-content {
         background-color: #1a1e27;
     }
 
     #criteriaModal .btn-close {
         filter: invert(1);
     }
-}
