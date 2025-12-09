@@ -63,16 +63,20 @@ def get_site(id):
                cat.categoria,
                s.categoria as categoria_short
         FROM Sitios s
-                 LEFT JOIN (SELECT sitio,
-                                   GROUP_CONCAT(pais, ',') AS countries,
-                                   MIN(pais)               AS first_country
-                            FROM Sitio_Pais
-                            GROUP BY sitio) c ON c.sitio = s.id_no
-                 JOIN Paises p ON c.first_country = p.iso_code
-                 JOIN Localizacoes l on s.id_no = l.sitio
-                 join Justificacoes j on s.id_no = j.sitio
-                 join Periodos_Perigo pp on s.id_no = pp.sitio
-                 JOIN Categorias cat on s.categoria = cat.categoria_short
+                 LEFT JOIN (
+            SELECT
+                sp.sitio,
+                GROUP_CONCAT(p.nome, ', ') AS countries,
+                MIN(sp.pais) AS first_country
+            FROM Sitio_Pais sp
+            JOIN Paises p ON sp.pais = p.iso_code
+            GROUP BY sp.sitio
+        ) c ON c.sitio = s.id_no
+        JOIN Paises p ON c.first_country = p.iso_code
+        JOIN Localizacoes l on s.id_no = l.sitio
+        LEFT JOIN Justificacoes j on s.id_no = j.sitio
+        LEFT JOIN Periodos_Perigo pp on s.id_no = pp.sitio
+        JOIN Categorias cat on s.categoria = cat.categoria_short
         WHERE s.id_no = ?
         GROUP BY s.id_no, s.nome, s.descricao, c.countries, p.regiao, l.latitude,
                  l.longitude, s.area_hectares, s.data_inscricao, j.justificacao,
