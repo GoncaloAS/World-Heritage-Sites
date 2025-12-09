@@ -308,17 +308,17 @@ def execute_analysis_query(query_type):
 
     elif query_type == 'avg_latitude_and_longitude_by_region':
         sql = """
-              SELECT TRIM(j.value)     AS region,
-                     AVG(lo.latitude)  AS avg_latitude,
-                     AVG(lo.longitude) AS avg_longitude
-              FROM Location lo
-                       NATURAL JOIN Place pl
-                       JOIN json_each('["' || replace(pl.region_en, ',', '","') || '"]') AS j
-              GROUP BY region
-              ORDER BY region;
+                SELECT regiao, AVG(latitude) AS avg_latitude, AVG(longitude) AS avg_longitude
+                FROM Localizacoes,
+                (SELECT DISTINCT sitio, regiao
+                FROM Sitio_Pais, Paises
+                WHERE Sitio_Pais.pais=Paises.iso_code) r
+                WHERE Localizacoes.sitio=r.sitio
+                GROUP BY regiao
+                ORDER BY regiao ASC;
               """
         context['headers'] = ['Region', 'Average Latitude', 'Average Longitude']
-        context['column_keys'] = ['region', 'avg_latitude', 'avg_longitude']
+        context['column_keys'] = ['regiao', 'avg_latitude', 'avg_longitude']
 
     elif query_type == 'top_criteria_for_unique_justification':
         sql = """
@@ -355,3 +355,4 @@ def run_analysis_query():
 
 if __name__ == '__main__':
     APP.run(debug=True)
+
