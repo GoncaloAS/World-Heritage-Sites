@@ -225,130 +225,129 @@ def execute_analysis_query(query_type):
 
     if query_type == 'area_by_category':
         sql = """
-              select ca.category_short, SUM(lo.area_hectares) as total_area
-              from Category ca
-                       join Location lo on ca.site_number = lo.site_number
-              group by ca.category_short; \
+              select s.categoria, SUM(s.area_hectares) as total_area
+              from Sitios s
+              group by s.categoria; \
               """
         context['headers'] = ['Category', 'Area (ha)']
-        context['column_keys'] = ['category_short', 'total_area']
+        context['column_keys'] = ['categoria', 'total_area']
 
     elif query_type == 'sites_by_country':
         sql = """
-              SELECT TRIM(value)               AS state_name,
-                     CAST(COUNT(*) AS INTEGER) AS total_sites
-              FROM Place pl
-                       JOIN json_each('["' || replace(pl.states_name_en, ',', '","') ||
-                                      '"]')
-              GROUP BY state_name
-              ORDER BY total_sites DESC;
+              select p.nome, count(*) as total_sites from Sitio_Pais sp
+                       join Paises p on sp.pais = p.iso_code
+              group by p.nome
+              order by total_sites desc;
               """
         context['headers'] = ['Country', 'Site Count']
-        context['column_keys'] = ['state_name', 'total_sites']
+        context['column_keys'] = ['nome', 'total_sites']
 
     elif query_type == 'dangerous_sites_by_region':
         sql = """
-              select count(*) as total_count, pl.region_en
-              from Place pl
-                       join State_of_Danger st on pl.site_number = st.site_number
-              where st.danger = 1
-              group by pl.region_en
+              select count(*) as total_count, p.regiao
+                from Sitio_Pais sp
+                       join Paises p on sp.pais = p.iso_code
+                          join Periodos_Perigo pp on sp.sitio = pp.sitio
+              where pp.data_inicio is not NULL and pp.data_fim is NULL
+              group by p.regiao
               order by total_count desc;
               """
         context['headers'] = ['Region', 'Endangered Sites']
-        context['column_keys'] = ['region_en', 'total_count']
+        context['column_keys'] = ['regiao', 'total_count']
 
     elif query_type == 'sites_by_inscription_year':
         sql = """
-              select count(*) as total_count, ad.date_inscribed
-              from Associated_Dates ad
-              group by ad.date_inscribed
-              order by ad.date_inscribed asc;
+              select count(*) as total_count, s.data_inscricao
+              from Sitios s
+              group by s.data_inscricao
+              order by s.data_inscricao asc;
               """
         context['headers'] = ['Inscription Year', 'Site Count']
-        context['column_keys'] = ['date_inscribed', 'total_count']
+        context['column_keys'] = ['data_inscricao', 'total_count']
 
     elif query_type == 'top_5_country_with_most_dangerous_sites':
         sql = """
-              select pl.states_name_en, count(*) as total_count
-              from State_of_Danger sd
-                       natural join Place pl
-              where sd.danger == 1
-              group by pl.states_name_en
+              select p.nome, count(*) as total_count
+              from Sitio_Pais sp
+                    join Periodos_Perigo pp on sp.sitio = pp.sitio
+                    join Paises p on sp.pais = p.iso_code
+              where pp.data_inicio is not NULL and pp.data_fim is NULL
+              group by p.nome
               order by total_count desc
                   LIMIT 5;
               """
 
         context['headers'] = ['Country', 'Site Count']
-        context['column_keys'] = ['states_name_en', 'total_count']
+        context['column_keys'] = ['nome', 'total_count']
 
     elif query_type == 'average_criteria_per_site_per_category':
         sql = """
-                SELECT categoria, avg(num) AS avg_criterio
-                FROM
-                    (SELECT sitio, categoria, COUNT(*) AS num
-                    FROM Justificacoes, Sitios
-                    WHERE Justificacoes.sitio=Sitios.id_no
-                    GROUP by sitio)
-                GROUP BY categoria
-                ORDER BY avg_criterio DESC;
+              SELECT c.category_short,
+                     AVG(criteria_count) AS avg_criteria_per_site
+              FROM (SELECT sc.site_number,
+                           COUNT(*) AS criteria_count
+                    FROM Site_Criteria sc
+                    GROUP BY sc.site_number)
+                       natural join Category c
+              GROUP BY c.category_short
+              ORDER BY avg_criteria_per_site DESC;
               """
 
         context['headers'] = ['Category', 'Average Criteria']
-        context['column_keys'] = ['categoria', 'avg_criterio']
+        context['column_keys'] = ['category_short', 'avg_criteria_per_site']
 
     elif query_type == 'sites_with_park_in_name':
         sql = """
-                SELECT id_no, nome
-                FROM Sitios
-                WHERE nome LIKE '%Park%';
+              select ws.id_no, ws.name_en
+              from World_Heritage_Site ws
+              where ws.name_en like '%Park%';
               """
         context['headers'] = ['Site Id', 'Site Name']
-        context['column_keys'] = ['id_no', 'nome']
+        context['column_keys'] = ['id_no', 'name_en']
 
     elif query_type == 'number_sites_located_multiple_countries_per_hemisphere':
         sql = """
-                SELECT CASE
-                WHEN latitude>=0 THEN 'Northern'
-                ELSE 'Southern' END AS hemisphere, count(sitio) AS num_sitio
-                FROM Localizacoes
-                WHERE sitio IN
-                    (SELECT sitio
-                    FROM
-                        (SELECT sitio, count(*) AS num
-                        FROM Sitio_Pais
-                        GROUP BY sitio
-                        HAVING num>1))
-                GROUP BY hemisphere
-                ORDER BY num_sitio DESC;
+              SELECT CASE
+                         WHEN loc.latitude >= 0 THEN 'Northern'
+                         ELSE 'Southern' END AS hemisphere,
+                     COUNT(ws.id_no)         AS site_count
+              FROM World_Heritage_Site ws
+                       JOIN Location loc on ws.id_no = loc.site_number
+              WHERE loc.transboundary = 1
+              GROUP BY hemisphere
+              ORDER BY site_count DESC;
               """
         context['headers'] = ['Hemisphere', 'Number of Sites']
-        context['column_keys'] = ['hemisphere', 'num_sitio']
+        context['column_keys'] = ['hemisphere', 'site_count']
 
     elif query_type == 'avg_latitude_and_longitude_by_region':
         sql = """
-                SELECT regiao, AVG(latitude) AS avg_latitude, AVG(longitude) AS avg_longitude
-                FROM Localizacoes,
-                    (SELECT DISTINCT sitio, regiao
-                    FROM Sitio_Pais, Paises
-                    WHERE Sitio_Pais.pais=Paises.iso_code) r
-                WHERE Localizacoes.sitio=r.sitio
-                GROUP BY regiao
-                ORDER BY regiao ASC;
+              SELECT TRIM(j.value)     AS region,
+                     AVG(lo.latitude)  AS avg_latitude,
+                     AVG(lo.longitude) AS avg_longitude
+              FROM Location lo
+                       NATURAL JOIN Place pl
+                       JOIN json_each('["' || replace(pl.region_en, ',', '","') || '"]') AS j
+              GROUP BY region
+              ORDER BY region;
               """
         context['headers'] = ['Region', 'Average Latitude', 'Average Longitude']
-        context['column_keys'] = ['regiao', 'avg_latitude', 'avg_longitude']
+        context['column_keys'] = ['region', 'avg_latitude', 'avg_longitude']
 
     elif query_type == 'top_criteria_for_unique_justification':
         sql = """
-                SELECT criterio, COUNT(*) AS num_sites
-                FROM Justificacoes
-                WHERE justificacao LIKE '%unique%'
-                GROUP BY criterio
-                ORDER BY num_sites DESC LIMIT 5;
+              SELECT cr.criterion_code AS criterion_code,
+                     COUNT(whs.id_no)  AS site_count
+              FROM World_Heritage_Site whs
+                       JOIN Site_Criteria sc ON whs.id_no = sc.site_number
+                       JOIN Criterion_Descriptions cr \
+                            ON sc.criterion_code = cr.criterion_code
+              WHERE whs.justification_en LIKE '%unique%'
+              GROUP BY cr.criterion_code
+              ORDER BY site_count DESC LIMIT 5; \
               """
         context['headers'] = ['Criteria', 'Site Count']
-        context['column_keys'] = ['criterio', 'num_sites']
+        context['column_keys'] = ['criterion_code', 'site_count']
 
     if sql:
         context['results'] = db.execute(sql).fetchall()
@@ -370,4 +369,3 @@ def run_analysis_query():
 
 if __name__ == '__main__':
     APP.run(debug=True)
-
