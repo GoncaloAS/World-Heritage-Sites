@@ -322,18 +322,14 @@ def execute_analysis_query(query_type):
 
     elif query_type == 'top_criteria_for_unique_justification':
         sql = """
-              SELECT cr.criterion_code AS criterion_code,
-                     COUNT(whs.id_no)  AS site_count
-              FROM World_Heritage_Site whs
-                       JOIN Site_Criteria sc ON whs.id_no = sc.site_number
-                       JOIN Criterion_Descriptions cr \
-                            ON sc.criterion_code = cr.criterion_code
-              WHERE whs.justification_en LIKE '%unique%'
-              GROUP BY cr.criterion_code
-              ORDER BY site_count DESC LIMIT 5; \
+                SELECT criterio, COUNT(*) AS num_sites
+                FROM Justificacoes
+                WHERE justificacao LIKE "%unique%"
+                GROUP BY criterio
+                ORDER BY num_sites DESC LIMIT 5;
               """
         context['headers'] = ['Criteria', 'Site Count']
-        context['column_keys'] = ['criterion_code', 'site_count']
+        context['column_keys'] = ['criterio', 'num_sites']
 
     if sql:
         context['results'] = db.execute(sql).fetchall()
@@ -355,3 +351,4 @@ def run_analysis_query():
 
 if __name__ == '__main__':
     APP.run(debug=True)
+
