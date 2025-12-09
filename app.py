@@ -41,38 +41,42 @@ def index():
     logging.info(stats)
     return render_template('index.html', stats=stats)
 
+
 @APP.route('/sites/<int:id>/')
 def get_site(id):
     site = db.execute(
         '''
-        SELECT id_no,
-               name_en,
-               short_description_en,
-               place.states_name_en as countries,
-               region_en,
-               latitude,
-               longitude,
-               area_hectares,
-               date_inscribed,
-               justification_en,
-               danger,
-               category,
-               cd.category_short
-        FROM World_Heritage_Site
-                 JOIN Location ON World_Heritage_Site.id_no = Location.site_number
-                 JOIN place ON Location.site_number = place.site_number
-                 JOIN associated_dates
-                      ON World_Heritage_Site.id_no = associated_dates.site_number
-                 JOIN state_of_danger
-                      ON World_Heritage_Site.id_no = state_of_danger.site_number
-                 JOIN Category c ON World_Heritage_Site.id_no = c.site_number
-                 JOIN Category_Description cd ON c.category_short = cd.category_short
-                 JOIN site_criteria
-                      ON World_Heritage_Site.id_no = site_criteria.site_number
-                 JOIN Criterion_Descriptions cr
-                      ON site_criteria.criterion_code = cr.criterion_code
-        WHERE id_no = ?
-        GROUP BY id_no, name_en, short_description_en
+        SELECT s.id_no,
+               s.nome,
+               s.descricao,
+               c.countries,
+               p.regiao,
+               l.latitude,
+               l.longitude,
+               s.area_hectares,
+               s.data_inscricao,
+               j.justificacao,
+               CASE
+                   WHEN pp.data_inicio IS NOT NULL AND pp.data_fim IS NULL THEN 1
+                   ELSE 0
+                   END AS danger,
+               cat.categoria,
+               s.categoria as categoria_short
+        FROM Sitios s
+                 LEFT JOIN (SELECT sitio,
+                                   GROUP_CONCAT(pais, ',') AS countries,
+                                   MIN(pais)               AS first_country
+                            FROM Sitio_Pais
+                            GROUP BY sitio) c ON c.sitio = s.id_no
+                 JOIN Paises p ON c.first_country = p.iso_code
+                 JOIN Localizacoes l on s.id_no = l.sitio
+                 join Justificacoes j on s.id_no = j.sitio
+                 join Periodos_Perigo pp on s.id_no = pp.sitio
+                 JOIN Categorias cat on s.categoria = cat.categoria_short
+        WHERE s.id_no = ?
+        GROUP BY s.id_no, s.nome, s.descricao, c.countries, p.regiao, l.latitude,
+                 l.longitude, s.area_hectares, s.data_inscricao, j.justificacao,
+                 danger, cat.categoria, s.categoria
         ''', [id]).fetchone()
 
     if site is None:
@@ -130,39 +134,48 @@ def execute_filter_query(country, year, category_short, danger_status):
     danger_status = normalize(danger_status)
 
     base_sql = """
-               SELECT T1.id_no, T1.name_en, T1.short_description_en
-               FROM World_Heritage_Site AS T1
-
-                        -- Juntar todas as tabelas necessárias para os filtros potenciais
-                        JOIN Location AS T2 ON T1.id_no = T2.site_number
-                        JOIN Place AS T3 ON T1.id_no = T3.site_number
-                        JOIN associated_dates AS T4 ON T1.id_no = T4.site_number
-                        JOIN state_of_danger AS T5 ON T1.id_no = T5.site_number
-                        JOIN Category AS T6 ON T1.id_no = T6.site_number
-
-               WHERE 1 = 1
+               SELECT s.id_no, \
+                      s.nome, \
+                      s.descricao, \
+                      s.data_inscricao, \
+                      s.categoria, \
+                      CASE \
+                          WHEN pp.data_inicio IS NOT NULL AND pp.data_fim IS NULL THEN 1 \
+                          ELSE 0 \
+                          END AS danger
+               FROM Sitios s
+                        LEFT JOIN Periodos_Perigo pp
+                                  ON s.id_no = pp.sitio
+               WHERE 1 = 1 \
                """
+
     params = []
 
-    if country:
-        base_sql += " AND T3.states_name_en LIKE ?"
-        params.append('%' + country + '%')
+    base_sql += """
+            AND s.id_no IN (
+                SELECT sp.sitio 
+                FROM Sitio_Pais sp 
+                JOIN Paises p ON sp.pais = p.iso_code 
+                WHERE p.nome LIKE ?
+            )
+        """
+    params.append('%' + country + '%')
 
     if year and year.isdigit():
-        base_sql += " AND T4.date_inscribed = ?"
+        base_sql += " AND s.data_inscricao = ?"
         params.append(int(year))
 
     if category_short:
-        base_sql += " AND T6.category_short = ?"
+        base_sql += " AND s.categoria = ?"
         params.append(category_short)
 
     if danger_status:
-        base_sql += " AND T5.danger = ?"
+        base_sql += " AND danger = ?"
         params.append(int(danger_status))
 
     base_sql += """
-        GROUP BY T1.id_no, T1.name_en, T1.short_description_en
-        ORDER BY T1.id_no
+        GROUP BY s.id_no, s.nome, s.descricao
+        ORDER BY s.id_no
     """
 
     sites = db.execute(base_sql, params).fetchall()
