@@ -14,29 +14,29 @@ def index():
     stats = db.execute('''
                        SELECT *
                        FROM (SELECT ROUND(SUM(area_hectares) / 100, 2) AS total_area
-                             FROM Location)
-                                JOIN (SELECT COUNT(*) id_no
-                                      FROM World_Heritage_Site)
+                             FROM Sitios)
+                                JOIN (SELECT COUNT(*) id_no FROM Sitios
+                       )
                                 JOIN
-                            (SELECT COUNT(*) site_number1
-                             FROM Location
-                             WHERE transboundary = 1)
+                            (SELECT COUNT(*) AS site_number1
+                            FROM ( SELECT sitio FROM Sitio_Pais
+                            GROUP BY sitio
+                            HAVING COUNT(DISTINCT pais) > 1
+                            ))
                                 JOIN
-                            (SELECT COUNT(*) site_number2
-                             FROM State_Of_Danger
-                             WHERE danger = 1)
+                            (select count(*) site_number2 from Periodos_Perigo where data_inicio is not NULL and data_fim is NULL)
                                 JOIN
                             (SELECT COUNT(*) site_number3
-                             FROM Category
-                             WHERE category_short = 'C')
+                             FROM Sitios
+                             WHERE categoria = 'C')
                                 JOIN
                             (SELECT COUNT(*) site_number4
-                             FROM Category
-                             WHERE category_short = 'C/N')
+                             FROM Sitios
+                             WHERE categoria = 'C/N')
                                 JOIN
                             (SELECT COUNT(*) site_number5
-                             FROM Category
-                             WHERE category_short = 'N')
+                             FROM Sitios
+                             WHERE categoria = 'N')
                        ''').fetchone()
     logging.info(stats)
     return render_template('index.html', stats=stats)
