@@ -41,7 +41,6 @@ def index():
     logging.info(stats)
     return render_template('index.html', stats=stats)
 
-
 @APP.route('/sites/<int:id>/')
 def get_site(id):
     site = db.execute(

@@ -131,3 +131,25 @@ body {
         background-color: #1a1e27 !important;
     }
 }
+
+.site-container {
+    .bg-card {
+        background-color: #1f273b !important;
+    }
+
+    .detail-list dd {
+        padding-bottom: 0.5rem;
+    }
+
+    .text-decoration-underline-hover:hover {
+        text-decoration: underline !important;
+    }
+
+    #criteriaModal .modal-content {
+        background-color: #1a1e27;
+    }
+
+    #criteriaModal .btn-close {
+        filter: invert(1);
+    }
+}
