@@ -6,7 +6,7 @@ DB = dict()
 
 def connect():
     global DB
-    c = sqlite3.connect('data/world-heritage-sites.db', check_same_thread=False)
+    c = sqlite3.connect('data/world_heritage_sites.db', check_same_thread=False)
     c.row_factory = sqlite3.Row
     DB['conn'] = c
     DB['cursor'] = c.cursor()
