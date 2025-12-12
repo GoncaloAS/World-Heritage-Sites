@@ -4,7 +4,7 @@ from new_dataset import create_dataset
 
 xlsx_path = 'data/whc-sites-2024.xlsx'
 csv_path= 'data/whc-sites-2024-new.csv'
-db_path = ':data/world_heritage_sites.db'
+db_path = 'data/world_heritage_sites.db'
 
 
 
